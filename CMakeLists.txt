@@ -1,20 +1,15 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(sort_ros)
 
-## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
-
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package (OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -115,8 +110,9 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -132,7 +128,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/sort_ros_node.cpp)
+add_executable(sort_ros_node src/Sort.cpp src/Hungarian.cpp src/Tracker.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,6 +144,8 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(sort_ros_node ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
 
 #############
 ## Install ##
@@ -190,16 +188,3 @@ include_directories(
 #   # myfile2
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
-
-#############
-## Testing ##
-#############
-
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_sort_ros.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
