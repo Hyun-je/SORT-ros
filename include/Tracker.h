@@ -8,6 +8,9 @@
 #include "TrackerState.h"
 
 
+#define STATE_NUM	7
+
+
 class Tracker {
 
 public:

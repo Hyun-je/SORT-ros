@@ -16,12 +16,9 @@ Tracker::Tracker(TrackerState state) {
 
 
     // Initialize kalman filter
-    const int stateNum = 7;
-    const int measureNum = 4;
+    kf = cv::KalmanFilter(STATE_NUM, MEASURE_NUM, 0);
 
-    kf = cv::KalmanFilter(stateNum, measureNum, 0);
-
-    kf.transitionMatrix = (cv::Mat_<float>(stateNum, stateNum) <<
+    kf.transitionMatrix = (cv::Mat_<float>(STATE_NUM, STATE_NUM) <<
         1, 0, 0, 0, 1, 0, 0,
         0, 1, 0, 0, 0, 1, 0,
         0, 0, 1, 0, 0, 0, 1,
@@ -69,7 +66,7 @@ void Tracker::update(TrackerState state) {
     m_hits += 1;
     m_hit_streak += 1;
 
-    cv::Mat measurement = cv::Mat::zeros(4, 1, CV_32F);
+    cv::Mat measurement = cv::Mat::zeros(MEASURE_NUM, 1, CV_32F);
     measurement.at<float>(0, 0) = state.centerX;
     measurement.at<float>(1, 0) = state.centerY;
     measurement.at<float>(2, 0) = state.area;
