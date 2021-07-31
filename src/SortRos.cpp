@@ -1,6 +1,7 @@
 #include "SortRos.h"
 
 
+
 SortRos* SortRos::instance = nullptr;
 
 ros::Publisher SortRos::pub;
@@ -21,24 +22,27 @@ void SortRos::setup(void) {
 
     SortRos::s = new Sort(maxAge, minHits, iouThreshold);
 
-	SortRos::sub = nh.subscribe<sort_ros::RectArray> ("/rect_detected", 1, SortRos::rectArrayCallback);
-    SortRos::pub = nh.advertise<sort_ros::RectArray> ("/rect_tracked", 1);
+	SortRos::sub = nh.subscribe<visualization_msgs::MarkerArray> ("/markers_detected", 1, SortRos::rectArrayCallback);
+    SortRos::pub = nh.advertise<visualization_msgs::MarkerArray> ("/markers_tracked", 1);
 
 }
 
 
-void SortRos::rectArrayCallback (const sort_ros::RectArray::ConstPtr& rectArrayMsg) {
+void SortRos::rectArrayCallback (const visualization_msgs::MarkerArray::ConstPtr& markerArray) {
 
+    std::string frame_id;
     std::vector<SortRect> rects;
 
-    for(auto rectMsg : rectArrayMsg->rects) {
+    for(auto marker : markerArray->markers) {
+
+        frame_id = marker.header.frame_id;
 
         SortRect rect;
         rect.id = 0;
-        rect.centerX    = rectMsg.centerX;
-        rect.centerY    = rectMsg.centerY;
-        rect.width      = rectMsg.width;
-        rect.height     = rectMsg.height;
+        rect.centerX    = marker.pose.position.x;
+        rect.centerY    = marker.pose.position.y;
+        rect.width      = marker.scale.x;
+        rect.height     = marker.scale.y;
 
         rects.push_back(rect);
 
@@ -46,19 +50,42 @@ void SortRos::rectArrayCallback (const sort_ros::RectArray::ConstPtr& rectArrayM
 
     std::vector<SortRect> output = SortRos::s->update(rects);
 
-    sort_ros::RectArray rectArrayMsgOutput;
 
-    for(auto rect : rects) {
+    visualization_msgs::MarkerArray markerArrayOutput;
 
-        sort_ros::Rect rectMsg;
-        rectMsg.centerX     = rect.centerX;
-        rectMsg.centerY     = rect.centerY;
-        rectMsg.width       = rect.width;
-        rectMsg.height      = rect.height;
+    for(auto rect : output) {
 
-        rectArrayMsgOutput.rects.push_back(rectMsg);
+        visualization_msgs::Marker marker;
+
+        marker.header.stamp = ros::Time::now();
+        marker.header.frame_id = frame_id;
+
+        marker.frame_locked = true;
+        marker.lifetime = ros::Duration(0.5);
+        marker.ns = "bounding_box";
+        marker.id = rect.id;
+        marker.action = visualization_msgs::Marker::ADD;
+        marker.type = visualization_msgs::Marker::CUBE;
+        
+        marker.pose.position.x = rect.centerX;
+        marker.pose.position.y = rect.centerY;
+        marker.pose.position.z = 0.0;
+        marker.pose.orientation.x = 0.0;
+        marker.pose.orientation.y = 0.0;
+        marker.pose.orientation.z = 0.0;
+        marker.pose.orientation.w = 1.0;
+        
+        marker.scale.x = rect.width;
+        marker.scale.y = rect.height;
+        marker.scale.z = 1.0;
+        marker.color.a = 0.3;
+        marker.color.r = 1.0;
+        marker.color.g = 1.0;
+        marker.color.b = 1.0;
+
+        markerArrayOutput.markers.push_back(marker);
     }
 
-    SortRos::pub.publish(rectArrayMsg);
+    SortRos::pub.publish(markerArrayOutput);               
 
 }

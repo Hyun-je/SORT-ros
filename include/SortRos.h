@@ -2,8 +2,7 @@
 #define SORT_ROS_H
 
 #include "ros/ros.h"
-#include "sort_ros/Rect.h"
-#include "sort_ros/RectArray.h"
+#include "visualization_msgs/MarkerArray.h"
 
 #include "Sort.h"
 
@@ -33,7 +32,7 @@ private:
     static ros::Publisher pub;
     static ros::Subscriber sub;
 
-    static void rectArrayCallback(const sort_ros::RectArray::ConstPtr& rectArrayMsg);
+    static void rectArrayCallback(const visualization_msgs::MarkerArray::ConstPtr& markerArray);
 
 
 

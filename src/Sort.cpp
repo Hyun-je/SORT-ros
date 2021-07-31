@@ -27,7 +27,7 @@ std::vector<SortRect> Sort::update(std::vector<SortRect> detections) {
     }
 
 
-    // 1. prediction
+
     std::vector<SortRect> predictions;
     for(int i=0; i<trackers.size(); i++) {
         TrackerState state = trackers[i].predict();
