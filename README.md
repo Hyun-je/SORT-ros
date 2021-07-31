@@ -8,11 +8,12 @@ apt-get install ros-melodic-opencv*
 ```
 2. Clone source code
 ```
-cd ~/catkin_ws
+cd ~/catkin_ws/src
 git clone https://github.com/Hyun-je/SORT-ros/
 ```
 3. Build package
 ```
+cd ~/catkin_ws
 catkin_make
 ```
 
