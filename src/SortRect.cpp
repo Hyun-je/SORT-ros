@@ -16,7 +16,14 @@ void SortRect::fromTrackerState(TrackerState state) {
 
     centerX = state.centerX;
     centerY = state.centerY;
-    width = sqrt(state.area * state.aspectRatio);
-    height = state.area / width;
+
+    if(state.area > 0) {
+        width = sqrt(state.area * state.aspectRatio);
+        height = state.area / width;
+    }
+    else {
+        width = 0;
+        height = 0;
+    }
 
 }

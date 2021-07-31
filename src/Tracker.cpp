@@ -53,6 +53,10 @@ TrackerState Tracker::predict(void) {
 
     TrackerState state;
     state.fromMat(kf.predict());
+
+    if(state.area < 0) {
+        state.area = 0;
+    }
     
     return state;
 
