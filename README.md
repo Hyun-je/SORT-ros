@@ -1,5 +1,5 @@
 # SORT-ros
-SORT(Simple Online and Realtime Tracking) node for ROS
+Implementation of SORT(Simple Online and Realtime Tracking) algorithm for ROS Melodic. It can be used track objects in realtime from image or pointcloud detection. To maximize computational speed, all of soruce codes is written fully c++ language.
 
 ## Installation
 1. Install OpenCV for ROS Melodic
