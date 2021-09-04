@@ -69,7 +69,7 @@ void SortRos::rectArrayCallback (const visualization_msgs::MarkerArray::ConstPtr
         
         marker.pose.position.x = rect.centerX;
         marker.pose.position.y = rect.centerY;
-        marker.pose.position.z = 0.0;
+        marker.pose.position.z = 1.0;
         marker.pose.orientation.x = 0.0;
         marker.pose.orientation.y = 0.0;
         marker.pose.orientation.z = 0.0;
